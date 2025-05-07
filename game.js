@@ -6,12 +6,15 @@ const scoreDisplay = document.getElementById("score");
 let playerPosY = 100;
 let isJumping = false;
 let score = 0;
+let gravity = 1.5;
+let isCrouching = false;
 let gameInterval;
 let collisionCheck;
 
 let playerSpeed = 5;
 let jumpHeight = 100;
-let gravity = 2;
+let gravityEffect = 2;
+let obstacleSpeed = 2;
 
 document.body.addEventListener("keydown", function(e) {
   if (e.code === "ArrowUp" || e.code === "KeyW") {
@@ -22,7 +25,7 @@ document.body.addEventListener("keydown", function(e) {
 });
 
 function moveUp() {
-  if (playerPosY < 500 && !isJumping) { // Don't go beyond top
+  if (playerPosY < 500 && !isJumping) {
     isJumping = true;
     playerPosY += jumpHeight;
     updatePlayerPosition();
@@ -35,9 +38,13 @@ function moveUp() {
 }
 
 function moveDown() {
-  if (playerPosY > 10) { // Don't go below ground
-    playerPosY -= playerSpeed;
-    updatePlayerPosition();
+  if (!isCrouching) {
+    isCrouching = true;
+    player.style.transform = "scaleY(0.5)"; // Crouch animation
+    setTimeout(() => {
+      isCrouching = false;
+      player.style.transform = "scaleY(1)";
+    }, 300);
   }
 }
 
@@ -48,6 +55,9 @@ function updatePlayerPosition() {
 function startGame() {
   score = 0;
   playerPosY = 100;
+  isJumping = false;
+  isCrouching = false;
+
   gameInterval = setInterval(() => {
     score++;
     scoreDisplay.textContent = "Score: " + score;
@@ -57,7 +67,7 @@ function startGame() {
     let playerTop = parseInt(window.getComputedStyle(player).getPropertyValue("bottom"));
     let obstacleLeft = parseInt(window.getComputedStyle(obstacle).getPropertyValue("left"));
 
-    if (obstacleLeft >= 750 && obstacleLeft <= 790 && playerTop < 80) {
+    if (obstacleLeft >= 370 && obstacleLeft <= 410 && playerTop < 80) {
       endGame();
     }
   }, 10);
