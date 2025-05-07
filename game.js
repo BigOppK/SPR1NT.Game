@@ -3,38 +3,61 @@ const obstacle = document.getElementById("obstacle");
 const gameOverScreen = document.getElementById("game-over");
 const scoreDisplay = document.getElementById("score");
 
+let playerPosY = 100;
 let isJumping = false;
 let score = 0;
 let gameInterval;
 let collisionCheck;
 
+let playerSpeed = 5;
+let jumpHeight = 100;
+let gravity = 2;
+
 document.body.addEventListener("keydown", function(e) {
-  if (e.code === "Space" && !isJumping) {
-    jump();
+  if (e.code === "ArrowUp" || e.code === "KeyW") {
+    moveUp();
+  } else if (e.code === "ArrowDown" || e.code === "KeyS") {
+    moveDown();
   }
 });
 
-function jump() {
-  isJumping = true;
-  player.classList.add("jump");
-  setTimeout(() => {
-    player.classList.remove("jump");
-    isJumping = false;
-  }, 500);
+function moveUp() {
+  if (playerPosY < 500 && !isJumping) { // Don't go beyond top
+    isJumping = true;
+    playerPosY += jumpHeight;
+    updatePlayerPosition();
+    setTimeout(() => {
+      playerPosY -= jumpHeight;
+      updatePlayerPosition();
+      isJumping = false;
+    }, 300);
+  }
+}
+
+function moveDown() {
+  if (playerPosY > 10) { // Don't go below ground
+    playerPosY -= playerSpeed;
+    updatePlayerPosition();
+  }
+}
+
+function updatePlayerPosition() {
+  player.style.bottom = playerPosY + 'px';
 }
 
 function startGame() {
   score = 0;
+  playerPosY = 100;
   gameInterval = setInterval(() => {
     score++;
     scoreDisplay.textContent = "Score: " + score;
-  }, 200);
+  }, 100);
 
   collisionCheck = setInterval(() => {
     let playerTop = parseInt(window.getComputedStyle(player).getPropertyValue("bottom"));
-    let obstacleLeft = parseInt(window.getComputedStyle(obstacle).getPropertyValue("right"));
+    let obstacleLeft = parseInt(window.getComputedStyle(obstacle).getPropertyValue("left"));
 
-    if (obstacleLeft >= 750 && obstacleLeft <= 800 && playerTop < 40) {
+    if (obstacleLeft >= 750 && obstacleLeft <= 790 && playerTop < 80) {
       endGame();
     }
   }, 10);
