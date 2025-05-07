@@ -1,91 +1,96 @@
-const player = document.getElementById("player");
-const obstacle = document.getElementById("obstacle");
-const gameOverScreen = document.getElementById("game-over");
-const scoreDisplay = document.getElementById("score");
+const canvas = document.getElementById('gameCanvas');
+const ctx = canvas.getContext('2d');
 
-let playerPosY = 100;
-let isJumping = false;
+let player = { x: 180, y: 500, w: 30, h: 30, dy: 0, jumping: false };
+let obstacles = [];
 let score = 0;
-let gravity = 1.5;
-let isCrouching = false;
-let gameInterval;
-let collisionCheck;
+let gameRunning = true;
 
-let playerSpeed = 5;
-let jumpHeight = 100;
-let gravityEffect = 2;
-let obstacleSpeed = 2;
-
-document.body.addEventListener("keydown", function(e) {
-  if (e.code === "ArrowUp" || e.code === "KeyW") {
-    moveUp();
-  } else if (e.code === "ArrowDown" || e.code === "KeyS") {
-    moveDown();
-  }
-});
-
-function moveUp() {
-  if (playerPosY < 500 && !isJumping) {
-    isJumping = true;
-    playerPosY += jumpHeight;
-    updatePlayerPosition();
-    setTimeout(() => {
-      playerPosY -= jumpHeight;
-      updatePlayerPosition();
-      isJumping = false;
-    }, 300);
-  }
+function drawPlayer() {
+  ctx.fillStyle = "#00f";
+  ctx.fillRect(player.x, player.y, player.w, player.h);
 }
 
-function moveDown() {
-  if (!isCrouching) {
-    isCrouching = true;
-    player.style.transform = "scaleY(0.5)"; // Crouch animation
-    setTimeout(() => {
-      isCrouching = false;
-      player.style.transform = "scaleY(1)";
-    }, 300);
-  }
+function drawObstacle(obs) {
+  ctx.fillStyle = "#fff";
+  ctx.fillRect(obs.x, obs.y, obs.w, obs.h);
 }
 
-function updatePlayerPosition() {
-  player.style.bottom = playerPosY + 'px';
+function createObstacle() {
+  const x = Math.random() * (canvas.width - 40);
+  obstacles.push({ x: x, y: -40, w: 40, h: 40, dy: 4 });
 }
 
-function startGame() {
-  score = 0;
-  playerPosY = 100;
-  isJumping = false;
-  isCrouching = false;
+function drawScore() {
+  document.getElementById('scoreDisplay').textContent = `Score: ${score}`;
+}
 
-  gameInterval = setInterval(() => {
-    score++;
-    scoreDisplay.textContent = "Score: " + score;
-  }, 100);
+function updateGame() {
+  if (!gameRunning) return;
 
-  collisionCheck = setInterval(() => {
-    let playerTop = parseInt(window.getComputedStyle(player).getPropertyValue("bottom"));
-    let obstacleLeft = parseInt(window.getComputedStyle(obstacle).getPropertyValue("left"));
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  drawPlayer();
 
-    if (obstacleLeft >= 370 && obstacleLeft <= 410 && playerTop < 80) {
-      endGame();
+  player.y += player.dy;
+  if (player.jumping) {
+    player.dy += 1; // gravity
+    if (player.y >= 500) {
+      player.y = 500;
+      player.dy = 0;
+      player.jumping = false;
     }
-  }, 10);
+  }
+
+  obstacles.forEach((obs, i) => {
+    obs.y += obs.dy;
+    drawObstacle(obs);
+    if (
+      obs.x < player.x + player.w &&
+      obs.x + obs.w > player.x &&
+      obs.y < player.y + player.h &&
+      obs.y + obs.h > player.y
+    ) {
+      gameOver();
+    }
+    if (obs.y > canvas.height) {
+      obstacles.splice(i, 1);
+      score++;
+    }
+  });
+
+  drawScore();
+  requestAnimationFrame(updateGame);
 }
 
-function endGame() {
-  clearInterval(gameInterval);
-  clearInterval(collisionCheck);
-  obstacle.style.animation = "none";
-  obstacle.style.display = "none";
-  gameOverScreen.style.display = "block";
+function gameOver() {
+  gameRunning = false;
+  document.getElementById("gameOver").style.display = "block";
 }
 
 function restartGame() {
-  obstacle.style.animation = "moveObstacle 2s linear infinite";
-  obstacle.style.display = "block";
-  gameOverScreen.style.display = "none";
-  startGame();
+  player = { x: 180, y: 500, w: 30, h: 30, dy: 0, jumping: false };
+  obstacles = [];
+  score = 0;
+  gameRunning = true;
+  document.getElementById("gameOver").style.display = "none";
+  updateGame();
 }
 
-startGame();
+document.addEventListener("keydown", (e) => {
+  if ((e.key === "ArrowUp" || e.key === "w") && !player.jumping) {
+    player.dy = -15;
+    player.jumping = true;
+  }
+  if (e.key === "ArrowLeft" || e.key === "a") {
+    player.x -= 20;
+  }
+  if (e.key === "ArrowRight" || e.key === "d") {
+    player.x += 20;
+  }
+});
+
+setInterval(() => {
+  if (gameRunning) createObstacle();
+}, 1200);
+
+updateGame();
