@@ -7,12 +7,13 @@ body {
   justify-content: center;
   align-items: center;
   height: 100vh;
+  overflow: hidden;
 }
 
 #game {
   position: relative;
   width: 800px;
-  height: 300px;
+  height: 600px;
   background-color: #222;
   overflow: hidden;
   border: 4px solid #ff3c3c;
@@ -21,17 +22,19 @@ body {
 
 #player {
   position: absolute;
-  bottom: 0;
+  bottom: 100px;
   left: 50px;
-  width: 50px;
-  height: 50px;
+  width: 30px;
+  height: 30px;
   background-color: #ff3c3c;
+  background-image: url('https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/Pixel_character.svg/120px-Pixel_character.svg.png');
+  background-size: cover;
 }
 
 #obstacle {
   position: absolute;
   bottom: 0;
-  right: 0;
+  left: 100%;
   width: 40px;
   height: 40px;
   background-color: white;
@@ -39,18 +42,8 @@ body {
 }
 
 @keyframes moveObstacle {
-  from { right: -40px; }
-  to { right: 840px; }
-}
-
-.jump {
-  animation: jump 0.5s ease-out;
-}
-
-@keyframes jump {
-  0%   { bottom: 0; }
-  50%  { bottom: 120px; }
-  100% { bottom: 0; }
+  from { left: 100%; }
+  to { left: -40px; }
 }
 
 #score {
