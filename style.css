@@ -1,7 +1,11 @@
-body {
+* {
   margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
   background-color: #111;
-  color: white;
   font-family: 'Courier New', monospace;
   display: flex;
   justify-content: center;
@@ -10,14 +14,20 @@ body {
   overflow: hidden;
 }
 
+#game-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 #game {
   position: relative;
-  width: 800px;
+  width: 400px;
   height: 600px;
   background-color: #222;
-  overflow: hidden;
   border: 4px solid #ff3c3c;
   box-shadow: 0 0 20px red;
+  overflow: hidden;
 }
 
 #player {
@@ -51,6 +61,7 @@ body {
   top: 10px;
   left: 10px;
   font-size: 20px;
+  color: white;
 }
 
 #game-over {
@@ -64,6 +75,7 @@ body {
   padding: 20px;
   border: 2px solid #ff3c3c;
   font-size: 28px;
+  color: white;
 }
 
 #game-over button {
