@@ -1,89 +1,50 @@
-* {
+body {
   margin: 0;
   padding: 0;
-  box-sizing: border-box;
-}
-
-body {
   background-color: #111;
   font-family: 'Courier New', monospace;
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100vh;
-  overflow: hidden;
-}
-
-#game-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
 }
 
 #game {
   position: relative;
-  width: 400px;
-  height: 600px;
+}
+
+canvas {
+  border: 4px solid #ff4757;
   background-color: #222;
-  border: 4px solid #ff3c3c;
-  box-shadow: 0 0 20px red;
-  overflow: hidden;
 }
 
-#player {
+#gameOver {
   position: absolute;
-  bottom: 100px;
-  left: 50px;
-  width: 30px;
-  height: 30px;
-  background-color: #ff3c3c;
-  background-image: url('https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/Pixel_character.svg/120px-Pixel_character.svg.png');
-  background-size: cover;
-}
-
-#obstacle {
-  position: absolute;
-  bottom: 0;
-  left: 100%;
-  width: 40px;
-  height: 40px;
-  background-color: white;
-  animation: moveObstacle 2s linear infinite;
-}
-
-@keyframes moveObstacle {
-  from { left: 100%; }
-  to { left: -40px; }
-}
-
-#score {
-  position: absolute;
-  top: 10px;
-  left: 10px;
-  font-size: 20px;
-  color: white;
-}
-
-#game-over {
-  display: none;
-  position: absolute;
-  top: 30%;
-  left: 25%;
-  width: 50%;
-  text-align: center;
-  background: rgba(0,0,0,0.8);
+  top: 40%;
+  left: 20%;
+  width: 60%;
   padding: 20px;
-  border: 2px solid #ff3c3c;
-  font-size: 28px;
+  background: rgba(0,0,0,0.9);
   color: white;
+  font-size: 24px;
+  text-align: center;
+  display: none;
 }
 
-#game-over button {
+#gameOver button {
   margin-top: 10px;
   padding: 10px 20px;
-  font-size: 18px;
-  background: #ff3c3c;
+  background: #ff4757;
   color: white;
   border: none;
   cursor: pointer;
+  font-size: 18px;
+}
+
+#scoreDisplay {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  color: white;
+  font-size: 18px;
 }
